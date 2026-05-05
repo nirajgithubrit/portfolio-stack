@@ -15,9 +15,26 @@ import { ensureSiteUploadDir } from './middleware/siteUpload.js';
 export function createApp(): express.Application {
   const app = express();
   app.use(helmet());
+
+  const rawOrigins = process.env.CORS_ORIGIN;
+  const allowedOrigins = rawOrigins
+    ? rawOrigins.split(',').map((o) => o.trim()).filter(Boolean)
+    : [];
+
   app.use(
     cors({
-      origin: process.env.CORS_ORIGIN ?? true,
+      origin: allowedOrigins.length
+        ? (origin, callback) => {
+            if (!origin) {
+              // non-browser clients
+              return callback(null, true);
+            }
+            if (allowedOrigins.includes(origin)) {
+              return callback(null, true);
+            }
+            return callback(new Error('Not allowed by CORS'));
+          }
+        : true,
       credentials: true,
     })
   );
