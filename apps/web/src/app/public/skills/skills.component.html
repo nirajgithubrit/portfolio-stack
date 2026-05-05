@@ -1,0 +1,29 @@
+<section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+  <h2 class="text-3xl font-bold" style="color: var(--text-primary)">Skills</h2>
+  <p class="mt-2" style="color: var(--text-muted)">Organized by category with dynamic proficiency indicators.</p>
+
+  <div class="mt-10 grid gap-6 md:grid-cols-2">
+    @for (group of groupedSkills(); track group.category) {
+      <div class="rounded-2xl border p-5 backdrop-blur-md" style="border-color: var(--border); background: var(--surface-glass)">
+        <h3 class="text-lg font-semibold" style="color: var(--accent)">{{ group.category }}</h3>
+        <div class="mt-4 space-y-4">
+          @for (s of group.items; track trackById($index, s)) {
+            <div>
+              <div class="flex items-center justify-between gap-4">
+                <span class="font-medium" style="color: var(--text-primary)">{{ s.name }}</span>
+                <span class="text-xs" style="color: var(--text-muted)">{{ s.proficiency }}%</span>
+              </div>
+              <div class="mt-2 h-2 overflow-hidden rounded-full" style="background: var(--progress-track)">
+                <div
+                  class="h-full rounded-full transition-[width] duration-700 ease-out"
+                  [style.width.%]="s.proficiency"
+                  style="background: linear-gradient(to right, var(--gradient-from), var(--gradient-to))"
+                ></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</section>

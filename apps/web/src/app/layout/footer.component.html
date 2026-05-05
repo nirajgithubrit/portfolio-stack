@@ -1,0 +1,65 @@
+<footer class="border-t py-10 backdrop-blur-md" style="border-color: var(--border); background: var(--footer-bg)">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 sm:grid-cols-2 lg:grid-cols-3 sm:px-6">
+    <div>
+      <div class="flex items-center gap-3">
+        <img
+          [src]="settings()?.logoUrl || '/logo.svg'"
+          width="40"
+          height="40"
+          alt=""
+          class="rounded-lg opacity-90"
+          loading="lazy"
+        />
+        <p class="text-base font-semibold" style="color: var(--text-primary)">{{ settings()?.fullName || 'Portfolio' }}</p>
+      </div>
+      <p class="mt-4 text-sm leading-relaxed" style="color: var(--text-muted)">
+        Building production-ready interfaces and APIs with scalable architecture and clean UX.
+      </p>
+      <div class="mt-4 flex flex-wrap items-center gap-3 text-sm">
+        @for (social of settings()?.socials ?? []; track social.url) {
+          <a
+            [href]="social.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 transition hover:opacity-90"
+            style="border-color: var(--border); color: var(--text-secondary); background: var(--surface-glass)"
+            >@if (social.icon && socialIconPath(social.icon)) {
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path [attr.d]="socialIconPath(social.icon)" />
+              </svg>
+            }
+            <span>{{ social.platform }}</span></a
+          >
+        }
+      </div>
+    </div>
+
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wide" style="color: var(--text-primary)">Quick Links</p>
+      <ul class="mt-4 space-y-2 text-sm">
+        <li><a routerLink="/" fragment="about" class="transition hover:opacity-90" style="color: var(--text-secondary)">About</a></li>
+        <li><a routerLink="/" fragment="projects" class="transition hover:opacity-90" style="color: var(--text-secondary)">Projects</a></li>
+        <li><a routerLink="/" fragment="skills" class="transition hover:opacity-90" style="color: var(--text-secondary)">Skills</a></li>
+        <li><a routerLink="/" fragment="contact" class="transition hover:opacity-90" style="color: var(--text-secondary)">Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wide" style="color: var(--text-primary)">Connect</p>
+      <p class="mt-4 text-sm" style="color: var(--text-muted)">Open for full-time roles and freelance collaboration.</p>
+      <a
+        routerLink="/"
+        fragment="contact"
+        class="mt-4 inline-flex rounded-xl px-4 py-2 text-sm font-semibold transition hover:brightness-110"
+        style="background: linear-gradient(to right, var(--gradient-from), var(--gradient-to)); color: var(--gradient-btn-text)"
+      >
+        Contact
+      </a>
+    </div>
+  </div>
+
+  <div class="mx-auto mt-8 flex max-w-6xl flex-col gap-2 border-t px-4 pt-5 text-xs sm:flex-row sm:items-center sm:justify-between sm:px-6" style="border-color: var(--border)">
+    <p style="color: var(--text-subtle)">© {{ year }} {{ settings()?.fullName || 'Portfolio' }}. All rights reserved.</p>
+    <p style="color: var(--text-subtle)">Built with Angular, Node.js and MongoDB.</p>
+  </div>
+</footer>

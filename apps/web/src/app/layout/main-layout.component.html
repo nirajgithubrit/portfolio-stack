@@ -1,0 +1,13 @@
+<div class="flex min-h-screen flex-col" style="background: linear-gradient(to bottom, var(--shell-from), var(--shell-via), var(--shell-to))">
+  <app-navbar />
+  <main class="relative flex-1 pt-20">
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background: radial-gradient(ellipse at top, var(--orb-1), transparent 50%)"
+    ></div>
+    <div class="relative z-10" [@routeAnim]="prepareRoute(outlet)">
+      <router-outlet #outlet="outlet" />
+    </div>
+  </main>
+  <app-footer />
+</div>

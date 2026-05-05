@@ -1,0 +1,76 @@
+<header class="fixed inset-x-0 top-0 z-50 transition-all duration-300" [class.nav-scrolled]="scrolled()" [class.nav-top]="!scrolled()">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+    <a routerLink="/" class="flex items-center gap-3" (click)="closeMenu()">
+      <img
+        [src]="settings()?.logoUrl || '/logo.svg'"
+        width="40"
+        height="40"
+        alt="Site logo"
+        class="rounded-xl"
+        loading="eager"
+      />
+      <span class="text-sm font-semibold tracking-tight sm:text-base" style="color: var(--text-primary)">{{
+        settings()?.fullName || 'Portfolio'
+      }}</span>
+    </a>
+    <button
+      type="button"
+      class="inline-flex rounded-lg border p-2 md:hidden"
+      style="border-color: var(--border); color: var(--text-secondary)"
+      (click)="toggleMenu()"
+      aria-label="Toggle menu"
+    >
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        @if (!menuOpen()) {
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        } @else {
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        }
+      </svg>
+    </button>
+    <ul
+      class="absolute left-4 right-4 top-full z-40 mt-2 flex max-md:[background-color:var(--nav-mobile-bg)] flex-col gap-1 rounded-2xl border p-3 shadow-glass backdrop-blur-md md:static md:z-auto md:mt-0 md:flex md:flex-row md:gap-1 md:border-0 md:bg-transparent md:p-0 md:shadow-none"
+      style="border-color: var(--border)"
+      [class.max-md:hidden]="!menuOpen()"
+    >
+      @for (link of navLinks; track link.label) {
+        <li>
+          <a
+            [routerLink]="link.path"
+            [fragment]="link.fragment"
+            routerLinkActive="nav-link-active"
+            [routerLinkActiveOptions]="{ exact: link.exact }"
+            class="group flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition hover:opacity-90"
+            style="color: var(--text-secondary)"
+            (click)="closeMenu()"
+            ><svg class="h-4 w-4 opacity-90 transition group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.9" aria-hidden="true">
+              <path [attr.d]="iconPath(link.icon)" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>{{ link.label }}</span></a
+          >
+        </li>
+      }
+      <!-- <li class="md:ml-1">
+        <button
+          type="button"
+          class="block w-full rounded-xl border px-4 py-2 text-center text-sm transition md:w-auto"
+          style="border-color: var(--border); color: var(--accent); background: var(--accent-soft)"
+          (click)="theme.cycleTheme(); closeMenu()"
+          aria-label="Change theme"
+          title="Theme"
+        >
+          Theme
+        </button>
+      </li> -->
+      <!-- <li class="md:ml-1">
+        <a
+          routerLink="/admin/login"
+          class="block rounded-xl border px-4 py-2 text-center text-sm font-semibold transition"
+          style="border-color: var(--border-hover); color: var(--accent); background: var(--accent-soft)"
+          (click)="closeMenu()"
+          >Admin</a
+        >
+      </li> -->
+    </ul>
+  </nav>
+</header>

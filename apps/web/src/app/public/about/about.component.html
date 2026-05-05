@@ -1,0 +1,48 @@
+<section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+  <h2 class="text-3xl font-bold" style="color: var(--text-primary)">About</h2>
+  <p class="mt-4" style="color: var(--text-muted)">
+    {{ settings()?.aboutSummary || 'Building scalable web products with clean architecture and user-first interfaces.' }}
+  </p>
+
+  <div class="mt-12 grid gap-10 lg:grid-cols-2">
+    <div class="rounded-2xl border p-6 shadow-glass backdrop-blur-md" style="border-color: var(--border); background: var(--surface-glass); box-shadow: var(--shadow-glass)">
+      <h3 class="text-lg font-semibold" style="color: var(--text-primary)">Skills</h3>
+      <p class="mt-1 text-sm" style="color: var(--text-subtle)">Loaded from API</p>
+      <ul class="mt-6 flex flex-wrap gap-2">
+        @for (s of skills(); track trackSkill($index, s)) {
+          <li
+            class="rounded-full border px-3 py-1 text-xs font-medium"
+            style="border-color: var(--border); background: var(--surface-elevated); color: var(--pill-fg)"
+          >
+            {{ s.name }}
+            <span style="color: var(--text-subtle)">· {{ s.category }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div class="rounded-2xl border p-6 shadow-glass backdrop-blur-md" style="border-color: var(--border); background: var(--surface-glass); box-shadow: var(--shadow-glass)">
+      <h3 class="text-lg font-semibold" style="color: var(--text-primary)">Experience</h3>
+      <p class="mt-1 text-sm" style="color: var(--text-subtle)">Timeline</p>
+      <ul class="relative mt-8 space-y-6 border-l pl-6" style="border-color: var(--border)" @timeline>
+        @for (e of experience(); track trackExp($index, e)) {
+          <li class="tl-item relative">
+            <span
+              class="absolute -left-[29px] top-1.5 h-3 w-3 rounded-full border-2"
+              style="border-color: var(--accent); background: var(--shell-from)"
+            ></span>
+            <p class="text-sm font-semibold" style="color: var(--text-primary)">{{ e.title }} · {{ e.company }}</p>
+            <p class="text-xs" style="color: var(--text-subtle)">
+              {{ e.startDate | date: 'MMM yyyy' }} —
+              {{ e.endDate ? (e.endDate | date: 'MMM yyyy') : 'Present' }}
+              @if (e.location) {
+                <span> · {{ e.location }}</span>
+              }
+            </p>
+            <p class="mt-2 text-sm" style="color: var(--text-muted)">{{ e.description }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

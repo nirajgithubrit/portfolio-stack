@@ -1,0 +1,43 @@
+<div class="flex min-h-screen items-center justify-center bg-night-950 px-4">
+  <div class="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-glass backdrop-blur-md">
+    <div class="mb-6 flex items-center gap-3">
+      <img src="/logo.svg" width="44" height="44" alt="" class="rounded-xl" />
+      <div>
+        <h1 class="text-xl font-bold text-white">Admin</h1>
+        <p class="text-sm text-slate-400">JWT login</p>
+      </div>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+      <div>
+        <label class="text-sm text-slate-300" for="adm-email">Email</label>
+        <input
+          id="adm-email"
+          class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-sm text-white"
+          formControlName="email"
+          autocomplete="username"
+        />
+      </div>
+      <div>
+        <label class="text-sm text-slate-300" for="adm-pass">Password</label>
+        <input
+          id="adm-pass"
+          type="password"
+          class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-sm text-white"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+      </div>
+      @if (error(); as e) {
+        <p class="text-sm text-rose-300">{{ e }}</p>
+      }
+      <button
+        type="submit"
+        class="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 py-2.5 text-sm font-semibold text-night-950 disabled:opacity-50"
+        [disabled]="loading()"
+      >
+        {{ loading() ? 'Signing in…' : 'Sign in' }}
+      </button>
+    </form>
+    <a routerLink="/" class="mt-6 block text-center text-sm text-cyan-300/90 hover:text-cyan-200">← Back to site</a>
+  </div>
+</div>
