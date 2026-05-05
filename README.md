@@ -1,5 +1,10 @@
 # Portfolio Stack (Monorepo)
 
+![CI](https://img.shields.io/github/actions/workflow/status/nirajgithubrit/portfolio-stack/ci.yml?branch=main&label=CI)
+![License](https://img.shields.io/github/license/nirajgithubrit/portfolio-stack)
+![Node](https://img.shields.io/badge/node-22.x-339933?logo=node.js&logoColor=white)
+![Last Commit](https://img.shields.io/github/last-commit/nirajgithubrit/portfolio-stack)
+
 Full-stack portfolio application using:
 - Angular (frontend)
 - Express + TypeScript (backend)
@@ -68,6 +73,7 @@ Create `server/.env` from `server/.env.example`:
 PORT=4000
 MONGODB_URI=mongodb://localhost:27017/portfolio_stack
 JWT_SECRET=replace-with-strong-secret
+JWT_EXPIRES_IN=7d
 CORS_ORIGIN=http://localhost:4200
 ADMIN_SEED_EMAIL=admin@example.com
 ADMIN_SEED_PASSWORD=ChangeMe123!
@@ -93,13 +99,96 @@ ADMIN_SEED_PASSWORD=ChangeMe123!
 - Contact form with success modal and MongoDB storage
 - Admin panel with JWT auth and CRUD for content
 
-## Deployment notes
+## Deployments
 
-- Frontend: Netlify or Vercel
-- Backend: Render, Railway, or Fly.io
-- Database: MongoDB Atlas
+### Frontend (Netlify)
 
-Before deploying:
-- Use strong secrets in `.env`
-- Set correct `CORS_ORIGIN`
-- Do not commit `.env` or credentials
+This repo includes `netlify.toml` at root.
+
+- Base directory: `apps/web`
+- Build command: `npm ci && npm run build`
+- Publish directory: `apps/web/dist/web/browser`
+
+After backend is deployed, update this line in `netlify.toml`:
+
+```toml
+to = "https://your-render-service.onrender.com/api/:splat"
+```
+
+Replace with your real backend URL and redeploy Netlify.
+
+### Backend (Render)
+
+This repo includes `render.yaml` at root.
+
+- Root directory: `server`
+- Build command: `npm ci && npm run build`
+- Start command: `npm run start`
+- Health check: `/api/health`
+
+### Backend (Railway alternative)
+
+Use the `server` folder as service root:
+
+- Build command: `npm ci && npm run build`
+- Start command: `npm run start`
+- Health check path: `/api/health`
+
+## Production environment variables (backend)
+
+Set these in Render/Railway dashboard:
+
+- `MONGODB_URI` = your MongoDB Atlas URI
+- `JWT_SECRET` = long random secret (min 32 chars)
+- `JWT_EXPIRES_IN` = `7d` (or shorter, e.g. `12h`)
+- `CORS_ORIGIN` = your Netlify domain (example `https://your-site.netlify.app`)
+- `ADMIN_SEED_EMAIL` = admin email
+- `ADMIN_SEED_PASSWORD` = strong password
+- `PORT` = platform provided (or `4000`)
+
+Security notes:
+
+- Never commit `.env`
+- Rotate `JWT_SECRET` if leaked
+- Use a dedicated MongoDB user with least privilege
+- Restrict MongoDB Atlas network access
+
+## API endpoints
+
+| Method | Path | Purpose | Auth |
+|---|---|---|---|
+| GET | `/api/health` | Health check | No |
+| POST | `/api/auth/login` | Admin login (returns JWT) | No |
+| GET | `/api/projects` | List projects | No |
+| POST | `/api/projects` | Create project | Yes (JWT) |
+| PUT | `/api/projects/:id` | Update project | Yes (JWT) |
+| DELETE | `/api/projects/:id` | Delete project | Yes (JWT) |
+| GET | `/api/skills` | List skills | No |
+| POST | `/api/skills` | Create skill | Yes (JWT) |
+| PUT | `/api/skills/:id` | Update skill | Yes (JWT) |
+| DELETE | `/api/skills/:id` | Delete skill | Yes (JWT) |
+| GET | `/api/experience` | List experience | No |
+| POST | `/api/experience` | Create experience | Yes (JWT) |
+| PUT | `/api/experience/:id` | Update experience | Yes (JWT) |
+| DELETE | `/api/experience/:id` | Delete experience | Yes (JWT) |
+| POST | `/api/contact` | Submit contact form | No |
+| GET | `/api/contact` | List contact messages | Yes (JWT) |
+| GET | `/api/site-settings` | Get site settings | No |
+| PUT | `/api/site-settings` | Update site settings | Yes (Admin JWT) |
+| POST | `/api/uploads/site/profile` | Upload profile image | Yes (Admin JWT) |
+| POST | `/api/uploads/site/logo` | Upload logo image | Yes (Admin JWT) |
+| POST | `/api/uploads/site/resume` | Upload resume PDF | Yes (Admin JWT) |
+
+## Deployment checklist (click-by-click)
+
+1. Deploy backend on Render (or Railway) from this repo using `server` as root.
+2. Set backend env vars and wait for healthy `/api/health`.
+3. Copy backend public URL.
+4. Edit `netlify.toml` API redirect target to backend URL.
+5. Deploy frontend on Netlify from same repo.
+6. Set `CORS_ORIGIN` in backend to your Netlify URL and redeploy backend.
+7. Test:
+   - home data loads
+   - admin login works
+   - contact form submit works
+   - uploads from admin work
