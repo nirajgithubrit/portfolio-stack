@@ -5,47 +5,52 @@
     <p class="mt-1 text-xs text-slate-500">Profile, logo, and resume uploads now auto-save their URLs. Use Save Settings for all other fields.</p>
   </div>
 
-  <form class="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6" [formGroup]="form" (ngSubmit)="save()">
+  <form class="space-y-5" [formGroup]="form" (ngSubmit)="save()">
     @if (assetError(); as ae) {
       <p class="rounded-lg border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-200">{{ ae }}</p>
     }
-    <div class="grid gap-4 md:grid-cols-2">
-      <label class="text-sm text-slate-300">Full Name <input class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="fullName" /></label>
-      <label class="text-sm text-slate-300">Headline <input class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="headline" /></label>
-      <label class="text-sm text-slate-300">Location <input class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="locationLabel" /></label>
-      <label class="text-sm text-slate-300">Timezone <input class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="timezone" /></label>
-      <label class="text-sm text-slate-300">Site theme
-        <select class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="themeId">
-          @for (tid of themeIds; track tid) {
-            <option [value]="tid">{{ themeLabels[tid] }}</option>
+    <section class="admin-card p-4 md:p-5">
+      <h2 class="mb-3 text-lg font-semibold text-white">Profile & Branding</h2>
+      <div class="grid gap-4 md:grid-cols-2">
+        <label class="text-sm text-slate-300">Full Name <input class="admin-input mt-1" formControlName="fullName" /></label>
+        <label class="text-sm text-slate-300">Headline <input class="admin-input mt-1" formControlName="headline" /></label>
+        <label class="text-sm text-slate-300">Location <input class="admin-input mt-1" formControlName="locationLabel" /></label>
+        <label class="text-sm text-slate-300">Timezone <input class="admin-input mt-1" formControlName="timezone" /></label>
+        <label class="text-sm text-slate-300">Site theme
+          <select class="admin-select mt-1" formControlName="themeId">
+            @for (tid of themeIds; track tid) {
+              <option [value]="tid">{{ themeLabels[tid] }}</option>
+            }
+          </select>
+        </label>
+      </div>
+      <div class="mt-4 grid gap-4 md:grid-cols-2">
+        <div class="admin-mobile-card text-sm text-slate-300">
+          <span class="font-medium">Profile photo</span>
+          <input type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-xs text-slate-400 file:mr-2 file:rounded-lg file:border-0 file:bg-cyan-500/20 file:px-3 file:py-1.5 file:text-cyan-200" (change)="onProfileFile($event)" [disabled]="uploadingProfile()" />
+          @if (uploadingProfile()) {
+            <p class="mt-1 text-xs text-slate-500">Uploading…</p>
           }
-        </select>
-      </label>
-      <div class="text-sm text-slate-300">
-        <span class="font-medium">Profile photo</span>
-        <input type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-xs text-slate-400 file:mr-2 file:rounded-lg file:border-0 file:bg-cyan-500/20 file:px-3 file:py-1.5 file:text-cyan-200" (change)="onProfileFile($event)" [disabled]="uploadingProfile()" />
-        @if (uploadingProfile()) {
-          <p class="mt-1 text-xs text-slate-500">Uploading…</p>
-        }
-        @if (form.value.profilePhotoUrl) {
-          <p class="mt-1 truncate text-xs text-slate-500" title="{{ form.value.profilePhotoUrl }}">{{ form.value.profilePhotoUrl }}</p>
-          <img [src]="form.value.profilePhotoUrl" alt="Profile preview" class="mt-2 h-16 w-16 rounded-lg border border-white/10 object-cover" />
-        }
-        <input type="hidden" formControlName="profilePhotoUrl" />
+          @if (form.value.profilePhotoUrl) {
+            <p class="mt-1 truncate text-xs text-slate-500" title="{{ form.value.profilePhotoUrl }}">{{ form.value.profilePhotoUrl }}</p>
+            <img [src]="form.value.profilePhotoUrl" alt="Profile preview" class="mt-2 h-16 w-16 rounded-lg border border-white/10 object-cover" />
+          }
+          <input type="hidden" formControlName="profilePhotoUrl" />
+        </div>
+        <div class="admin-mobile-card text-sm text-slate-300">
+          <span class="font-medium">Logo</span>
+          <input type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-xs text-slate-400 file:mr-2 file:rounded-lg file:border-0 file:bg-cyan-500/20 file:px-3 file:py-1.5 file:text-cyan-200" (change)="onLogoFile($event)" [disabled]="uploadingLogo()" />
+          @if (uploadingLogo()) {
+            <p class="mt-1 text-xs text-slate-500">Uploading…</p>
+          }
+          @if (form.value.logoUrl) {
+            <p class="mt-1 truncate text-xs text-slate-500" title="{{ form.value.logoUrl }}">{{ form.value.logoUrl }}</p>
+            <img [src]="form.value.logoUrl" alt="Logo preview" class="mt-2 h-12 w-12 rounded-lg border border-white/10 object-cover" />
+          }
+          <input type="hidden" formControlName="logoUrl" />
+        </div>
       </div>
-      <div class="text-sm text-slate-300">
-        <span class="font-medium">Logo</span>
-        <input type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-xs text-slate-400 file:mr-2 file:rounded-lg file:border-0 file:bg-cyan-500/20 file:px-3 file:py-1.5 file:text-cyan-200" (change)="onLogoFile($event)" [disabled]="uploadingLogo()" />
-        @if (uploadingLogo()) {
-          <p class="mt-1 text-xs text-slate-500">Uploading…</p>
-        }
-        @if (form.value.logoUrl) {
-          <p class="mt-1 truncate text-xs text-slate-500" title="{{ form.value.logoUrl }}">{{ form.value.logoUrl }}</p>
-          <img [src]="form.value.logoUrl" alt="Logo preview" class="mt-2 h-12 w-12 rounded-lg border border-white/10 object-cover" />
-        }
-        <input type="hidden" formControlName="logoUrl" />
-      </div>
-      <div class="text-sm text-slate-300 md:col-span-2">
+      <div class="admin-mobile-card mt-4 text-sm text-slate-300">
         <span class="font-medium">Resume (PDF)</span>
         <input type="file" accept="application/pdf" class="mt-1 block w-full max-w-md text-xs text-slate-400 file:mr-2 file:rounded-lg file:border-0 file:bg-cyan-500/20 file:px-3 file:py-1.5 file:text-cyan-200" (change)="onResumeFile($event)" [disabled]="uploadingResume()" />
         @if (uploadingResume()) {
@@ -57,45 +62,49 @@
         }
         <input type="hidden" formControlName="resumeUrl" />
       </div>
-      <label class="text-sm text-slate-300">Contact Email <input class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="contactEmail" /></label>
-    </div>
+    </section>
 
-    <label class="block text-sm text-slate-300">About Summary
-      <textarea rows="4" class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="aboutSummary"></textarea>
-    </label>
-    <label class="block text-sm text-slate-300">Tagline Lines (one per line)
-      <textarea rows="3" class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="taglineLinesText"></textarea>
-    </label>
-    <label class="block text-sm text-slate-300">Optional extra hero lines (one per line) — years / project counts are computed automatically
-      <textarea rows="3" class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="heroStatsText"></textarea>
-    </label>
+    <section class="admin-card grid gap-4 p-4 md:grid-cols-2 md:p-5">
+      <h2 class="md:col-span-2 text-lg font-semibold text-white">Contact & About</h2>
+      <label class="text-sm text-slate-300">Contact Email <input class="admin-input mt-1" formControlName="contactEmail" /></label>
+      <label class="text-sm text-slate-300">Phone <input class="admin-input mt-1" formControlName="phone" /></label>
+      <label class="block text-sm text-slate-300 md:col-span-2">About Summary
+        <textarea rows="4" class="admin-textarea mt-1" formControlName="aboutSummary"></textarea>
+      </label>
+      <label class="block text-sm text-slate-300 md:col-span-2">Tagline Lines (one per line)
+        <textarea rows="3" class="admin-textarea mt-1" formControlName="taglineLinesText"></textarea>
+      </label>
+      <label class="block text-sm text-slate-300 md:col-span-2">Optional extra hero lines (one per line) — years / project counts are computed automatically
+        <textarea rows="3" class="admin-textarea mt-1" formControlName="heroStatsText"></textarea>
+      </label>
+    </section>
 
-    <div class="space-y-3">
+    <section class="admin-card space-y-3 p-4 md:p-5">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold text-white">Social Links</h2>
-        <button type="button" class="rounded-lg border border-white/20 px-3 py-1 text-sm text-slate-200" (click)="addSocial()">Add</button>
+        <button type="button" class="admin-btn-secondary !px-3 !py-1 text-sm" (click)="addSocial()">Add</button>
       </div>
       <div formArrayName="socials" class="space-y-2">
         @for (group of socials.controls; track $index) {
           <div class="grid gap-2 rounded-xl border border-white/10 p-3 md:grid-cols-3" [formGroupName]="$index">
-            <input placeholder="Platform" class="rounded-lg border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="platform" />
-            <input placeholder="URL" class="rounded-lg border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="url" />
+            <input placeholder="Platform" class="admin-input" formControlName="platform" />
+            <input placeholder="URL" class="admin-input" formControlName="url" />
             <div class="flex gap-2">
-              <input placeholder="Icon key" class="flex-1 rounded-lg border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="icon" />
-              <button type="button" class="rounded-lg border border-rose-400/40 px-3 py-2 text-rose-200" (click)="removeSocial($index)">X</button>
+              <input placeholder="Icon key" class="admin-input flex-1" formControlName="icon" />
+              <button type="button" class="admin-btn-danger !px-3 !py-2" (click)="removeSocial($index)">X</button>
             </div>
           </div>
         }
       </div>
-    </div>
+    </section>
 
-    <div class="grid gap-4 md:grid-cols-2">
-      <label class="text-sm text-slate-300">SEO Title <input class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="seoTitle" /></label>
-      <label class="text-sm text-slate-300">Phone <input class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="phone" /></label>
-    </div>
-    <label class="block text-sm text-slate-300">SEO Description
-      <textarea rows="2" class="mt-1 w-full rounded-xl border border-white/10 bg-night-950/80 px-3 py-2 text-white" formControlName="seoDescription"></textarea>
-    </label>
+    <section class="admin-card grid gap-4 p-4 md:grid-cols-2 md:p-5">
+      <h2 class="md:col-span-2 text-lg font-semibold text-white">SEO</h2>
+      <label class="text-sm text-slate-300">SEO Title <input class="admin-input mt-1" formControlName="seoTitle" /></label>
+      <label class="text-sm text-slate-300">SEO Description
+        <textarea rows="2" class="admin-textarea mt-1" formControlName="seoDescription"></textarea>
+      </label>
+    </section>
 
     @if (success(); as ok) {
       <p class="rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">{{ ok }}</p>
@@ -104,8 +113,10 @@
       <p class="rounded-lg border border-rose-400/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">{{ err }}</p>
     }
 
-    <button type="submit" [disabled]="busy()" class="rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 px-5 py-2 text-sm font-semibold text-night-950 disabled:opacity-60">
-      {{ busy() ? 'Saving...' : 'Save Settings' }}
-    </button>
+    <div class="admin-sticky-actions flex justify-end">
+      <button type="submit" [disabled]="busy()" class="admin-btn-primary px-5 py-2 disabled:opacity-60">
+        {{ busy() ? 'Saving...' : 'Save Settings' }}
+      </button>
+    </div>
   </form>
 </div>

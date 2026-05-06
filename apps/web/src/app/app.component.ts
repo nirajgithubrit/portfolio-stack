@@ -3,12 +3,16 @@ import { ViewportScroller } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { SeoService } from './core/seo.service';
 import { ThemeService } from './core/theme.service';
+import { BackendWarmupBannerComponent } from './shared/backend-warmup-banner.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
-  template: `<router-outlet />`,
+  imports: [RouterOutlet, BackendWarmupBannerComponent],
+  template: `
+    <router-outlet />
+    <app-backend-warmup-banner />
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {

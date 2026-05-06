@@ -5,7 +5,7 @@
   }
   <div class="mt-6 space-y-3">
     @for (x of items(); track trackById($index, x)) {
-      <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-white/10 bg-white/5 p-4">
+      <div class="admin-mobile-card flex flex-wrap items-center justify-between gap-2">
         <div>
           <p class="font-semibold text-white">{{ x.title }} · {{ x.company }}</p>
           <p class="text-xs text-slate-500">{{ x.startDate | slice: 0:10 }} — {{ x.endDate ? (x.endDate | slice: 0:10) : 'Present' }}</p>
@@ -19,34 +19,34 @@
   </div>
 
   <h2 class="mt-10 text-lg font-semibold text-white">Add experience</h2>
-  <form [formGroup]="form" (ngSubmit)="create()" class="mt-4 grid gap-3 sm:grid-cols-2">
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="company" placeholder="Company" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="title" placeholder="Title" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="location" placeholder="Location" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" type="date" formControlName="startDate" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" type="date" formControlName="endDate" />
-    <textarea class="sm:col-span-2 min-h-[80px] rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="description"></textarea>
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" type="number" formControlName="order" />
-    <button type="submit" class="sm:col-span-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 py-2 text-sm font-semibold text-night-950" [disabled]="busy()">Create</button>
+  <form [formGroup]="form" (ngSubmit)="create()" class="admin-card mt-4 grid gap-3 p-4 sm:grid-cols-2">
+    <input class="admin-input" formControlName="company" placeholder="Company" />
+    <input class="admin-input" formControlName="title" placeholder="Title" />
+    <input class="admin-input" formControlName="location" placeholder="Location" />
+    <input class="admin-input" type="date" formControlName="startDate" />
+    <input class="admin-input" type="date" formControlName="endDate" />
+    <textarea class="admin-textarea sm:col-span-2" formControlName="description"></textarea>
+    <input class="admin-input" type="number" formControlName="order" />
+    <button type="submit" class="admin-btn-primary sm:col-span-2" [disabled]="busy()">Create</button>
   </form>
 </div>
 
 @if (editing(); as e) {
-  <div class="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-4" (click)="closeEdit()">
-    <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/10 bg-night-900 p-6" (click)="$event.stopPropagation()">
+  <div class="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-0 sm:p-4" (click)="closeEdit()">
+    <div class="flex h-[100dvh] w-full flex-col overflow-y-auto border border-white/10 bg-night-900 p-4 sm:h-auto sm:max-h-[90vh] sm:max-w-lg sm:rounded-2xl sm:p-6" (click)="$event.stopPropagation()">
       <h3 class="font-bold text-white">Edit experience</h3>
       <div class="mt-4 grid gap-3">
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.company" (input)="patch('company', $any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.title" (input)="patch('title', $any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.location" (input)="patch('location', $any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" type="date" [value]="toInputDate(e.startDate)" (input)="patch('startDate', $any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" type="date" [value]="toInputDate(e.endDate)" (input)="patch('endDate', $any($event.target).value || null)" />
-        <textarea class="min-h-[100px] rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.description" (input)="patch('description', $any($event.target).value)"></textarea>
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" type="number" [value]="e.order" (input)="patch('order', +$any($event.target).value)" />
+        <input class="admin-input" [value]="e.company" (input)="patch('company', $any($event.target).value)" />
+        <input class="admin-input" [value]="e.title" (input)="patch('title', $any($event.target).value)" />
+        <input class="admin-input" [value]="e.location" (input)="patch('location', $any($event.target).value)" />
+        <input class="admin-input" type="date" [value]="toInputDate(e.startDate)" (input)="patch('startDate', $any($event.target).value)" />
+        <input class="admin-input" type="date" [value]="toInputDate(e.endDate)" (input)="patch('endDate', $any($event.target).value || null)" />
+        <textarea class="admin-textarea" [value]="e.description" (input)="patch('description', $any($event.target).value)"></textarea>
+        <input class="admin-input" type="number" [value]="e.order" (input)="patch('order', +$any($event.target).value)" />
       </div>
-      <div class="mt-6 flex justify-end gap-2">
-        <button type="button" class="rounded-lg border border-white/10 px-4 py-2 text-sm" (click)="closeEdit()">Cancel</button>
-        <button type="button" class="rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-night-950" (click)="saveEdit()">Save</button>
+      <div class="admin-sticky-actions mt-auto flex justify-end gap-2">
+        <button type="button" class="admin-btn-secondary !px-4 !py-2 text-sm" (click)="closeEdit()">Cancel</button>
+        <button type="button" class="admin-btn-primary !px-4 !py-2 text-sm" (click)="saveEdit()">Save</button>
       </div>
     </div>
   </div>

@@ -1,35 +1,50 @@
 import type { Request, Response, NextFunction } from 'express';
 import { MulterError } from 'multer';
+import fs from 'fs/promises';
+import { isCloudinaryEnabled, uploadToCloudinary } from '../utils/cloudinary.js';
 
 function publicUrl(filename: string): string {
   return `/api/uploads-files/site/${filename}`;
 }
 
-export function uploadProfile(req: Request, res: Response): void {
-  const file = req.file;
-  if (!file) {
-    res.status(400).json({ message: 'No file uploaded', code: 'NO_FILE' });
-    return;
+async function resolveUrl(file: Express.Multer.File, resourceType: 'image' | 'raw'): Promise<string> {
+  if (!isCloudinaryEnabled()) {
+    return publicUrl(file.filename);
   }
-  res.status(201).json({ url: publicUrl(file.filename) });
+
+  const url = await uploadToCloudinary(file.path, 'portfolio-stack/site', resourceType);
+  await fs.unlink(file.path).catch(() => undefined);
+  return url;
 }
 
-export function uploadLogo(req: Request, res: Response): void {
+export async function uploadProfile(req: Request, res: Response): Promise<void> {
   const file = req.file;
   if (!file) {
     res.status(400).json({ message: 'No file uploaded', code: 'NO_FILE' });
     return;
   }
-  res.status(201).json({ url: publicUrl(file.filename) });
+  const url = await resolveUrl(file, 'image');
+  res.status(201).json({ url });
 }
 
-export function uploadResume(req: Request, res: Response): void {
+export async function uploadLogo(req: Request, res: Response): Promise<void> {
   const file = req.file;
   if (!file) {
     res.status(400).json({ message: 'No file uploaded', code: 'NO_FILE' });
     return;
   }
-  res.status(201).json({ url: publicUrl(file.filename) });
+  const url = await resolveUrl(file, 'image');
+  res.status(201).json({ url });
+}
+
+export async function uploadResume(req: Request, res: Response): Promise<void> {
+  const file = req.file;
+  if (!file) {
+    res.status(400).json({ message: 'No file uploaded', code: 'NO_FILE' });
+    return;
+  }
+  const url = await resolveUrl(file, 'raw');
+  res.status(201).json({ url });
 }
 
 export function handleMulterError(err: unknown, _req: Request, res: Response, next: NextFunction): void {

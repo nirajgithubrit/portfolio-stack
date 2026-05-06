@@ -3,7 +3,7 @@
   @if (error(); as err) {
     <p class="mt-2 text-sm text-rose-300">{{ err }}</p>
   }
-  <div class="mt-6 overflow-x-auto rounded-xl border border-white/10">
+  <div class="admin-table-wrap mt-6 hidden md:block">
     <table class="min-w-full text-left text-sm">
       <thead class="border-b border-white/10 bg-white/5 text-slate-400">
         <tr>
@@ -28,30 +28,47 @@
       </tbody>
     </table>
   </div>
+  <div class="mt-6 space-y-3 md:hidden">
+    @for (s of items(); track trackById($index, s)) {
+      <article class="admin-mobile-card">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <p class="font-semibold text-white">{{ s.name }}</p>
+            <p class="text-xs text-slate-400">{{ s.category }}</p>
+          </div>
+          <span class="rounded-full border border-white/10 px-2 py-0.5 text-xs text-slate-300">{{ s.proficiency }}%</span>
+        </div>
+        <div class="mt-3 flex gap-2">
+          <button type="button" class="admin-btn-secondary !px-3 !py-1.5 !text-xs" (click)="startEdit(s)">Edit</button>
+          <button type="button" class="admin-btn-danger !px-3 !py-1.5 !text-xs" (click)="deleteSkill(s._id)">Delete</button>
+        </div>
+      </article>
+    }
+  </div>
 
   <h2 class="mt-10 text-lg font-semibold text-white">Add skill</h2>
-  <form [formGroup]="form" (ngSubmit)="create()" class="mt-4 grid gap-3 sm:grid-cols-2">
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="name" placeholder="Name" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="category" placeholder="Category" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" type="number" formControlName="proficiency" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" type="number" formControlName="order" />
-    <button type="submit" class="sm:col-span-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 py-2 text-sm font-semibold text-night-950" [disabled]="busy()">Create</button>
+  <form [formGroup]="form" (ngSubmit)="create()" class="admin-card mt-4 grid gap-3 p-4 sm:grid-cols-2">
+    <input class="admin-input" formControlName="name" placeholder="Name" />
+    <input class="admin-input" formControlName="category" placeholder="Category" />
+    <input class="admin-input" type="number" formControlName="proficiency" />
+    <input class="admin-input" type="number" formControlName="order" />
+    <button type="submit" class="admin-btn-primary sm:col-span-2" [disabled]="busy()">Create</button>
   </form>
 </div>
 
 @if (editing(); as e) {
-  <div class="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-4" (click)="closeEdit()">
-    <div class="w-full max-w-md rounded-2xl border border-white/10 bg-night-900 p-6" (click)="$event.stopPropagation()">
+  <div class="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-0 sm:p-4" (click)="closeEdit()">
+    <div class="flex h-[100dvh] w-full flex-col border border-white/10 bg-night-900 p-4 sm:h-auto sm:max-w-md sm:rounded-2xl sm:p-6" (click)="$event.stopPropagation()">
       <h3 class="font-bold text-white">Edit skill</h3>
       <div class="mt-4 grid gap-3">
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.name" (input)="patch('name', $any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.category" (input)="patch('category', $any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" type="number" [value]="e.proficiency" (input)="patch('proficiency', +$any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" type="number" [value]="e.order" (input)="patch('order', +$any($event.target).value)" />
+        <input class="admin-input" [value]="e.name" (input)="patch('name', $any($event.target).value)" />
+        <input class="admin-input" [value]="e.category" (input)="patch('category', $any($event.target).value)" />
+        <input class="admin-input" type="number" [value]="e.proficiency" (input)="patch('proficiency', +$any($event.target).value)" />
+        <input class="admin-input" type="number" [value]="e.order" (input)="patch('order', +$any($event.target).value)" />
       </div>
-      <div class="mt-6 flex justify-end gap-2">
-        <button type="button" class="rounded-lg border border-white/10 px-4 py-2 text-sm" (click)="closeEdit()">Cancel</button>
-        <button type="button" class="rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-night-950" (click)="saveEdit()">Save</button>
+      <div class="admin-sticky-actions mt-auto flex justify-end gap-2">
+        <button type="button" class="admin-btn-secondary !px-4 !py-2 text-sm" (click)="closeEdit()">Cancel</button>
+        <button type="button" class="admin-btn-primary !px-4 !py-2 text-sm" (click)="saveEdit()">Save</button>
       </div>
     </div>
   </div>

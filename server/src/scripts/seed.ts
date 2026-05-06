@@ -15,8 +15,8 @@ if (!mongoUri) {
   process.exit(1);
 }
 
-const adminEmail = (process.env.ADMIN_SEED_EMAIL ?? 'admin@example.com').toLowerCase();
-const adminPassword = process.env.ADMIN_SEED_PASSWORD ?? 'ChangeMe123!';
+const adminEmail = (process.env.ADMIN_SEED_EMAIL ?? 'sataniniraj0000@gmail.com').toLowerCase();
+const adminPassword = process.env.ADMIN_SEED_PASSWORD ?? 'Niraj.portfolio@0503';
 
 await connectDb(mongoUri);
 

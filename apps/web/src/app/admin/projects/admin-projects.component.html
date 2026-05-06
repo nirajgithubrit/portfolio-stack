@@ -4,7 +4,7 @@
     <p class="mt-2 text-sm text-rose-300">{{ err }}</p>
   }
 
-  <div class="mt-8 overflow-x-auto rounded-xl border border-white/10">
+  <div class="admin-table-wrap mt-8 hidden md:block">
     <table class="min-w-full text-left text-sm">
       <thead class="border-b border-white/10 bg-white/5 text-slate-400">
         <tr>
@@ -31,38 +31,56 @@
       </tbody>
     </table>
   </div>
+  <div class="mt-6 space-y-3 md:hidden">
+    @for (p of items(); track trackById($index, p)) {
+      <article class="admin-mobile-card">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <p class="font-semibold text-white">{{ p.title }}</p>
+            <p class="text-xs text-slate-400">{{ p.slug }}</p>
+          </div>
+          <span class="rounded-full border border-white/10 px-2 py-0.5 text-xs text-slate-300">{{ p.status }}</span>
+        </div>
+        <p class="mt-2 text-xs text-slate-400">{{ p.role }} · {{ p.duration || 'No duration' }}</p>
+        <div class="mt-3 flex gap-2">
+          <button type="button" class="admin-btn-secondary !px-3 !py-1.5 !text-xs" (click)="startEdit(p)">Edit</button>
+          <button type="button" class="admin-btn-danger !px-3 !py-1.5 !text-xs" (click)="deleteProject(p._id)">Delete</button>
+        </div>
+      </article>
+    }
+  </div>
 
   <h2 class="mt-10 text-lg font-semibold text-white">Add project</h2>
-  <form [formGroup]="form" (ngSubmit)="create()" class="mt-4 grid gap-3 sm:grid-cols-2">
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="title" placeholder="Title" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="slug" placeholder="slug-url" />
-    <input class="sm:col-span-2 rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="summary" placeholder="Summary" />
+  <form [formGroup]="form" (ngSubmit)="create()" class="admin-card mt-4 grid gap-3 p-4 sm:grid-cols-2">
+    <input class="admin-input" formControlName="title" placeholder="Title" />
+    <input class="admin-input" formControlName="slug" placeholder="slug-url" />
+    <input class="admin-input sm:col-span-2" formControlName="summary" placeholder="Summary" />
     <textarea
-      class="sm:col-span-2 min-h-[88px] rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm"
+      class="admin-textarea sm:col-span-2"
       formControlName="description"
       placeholder="Description"
     ></textarea>
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="imageUrl" placeholder="Image URL" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="githubUrl" placeholder="GitHub URL" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="liveUrl" placeholder="Live URL" />
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="techStack" placeholder="Tech (comma separated)" />
-    <select class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="status">
+    <input class="admin-input" formControlName="imageUrl" placeholder="Image URL" />
+    <input class="admin-input" formControlName="githubUrl" placeholder="GitHub URL" />
+    <input class="admin-input" formControlName="liveUrl" placeholder="Live URL" />
+    <input class="admin-input" formControlName="techStack" placeholder="Tech (comma separated)" />
+    <select class="admin-select" formControlName="status">
       <option value="completed">Completed</option>
       <option value="live">Live</option>
     </select>
-    <select class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="role">
+    <select class="admin-select" formControlName="role">
       <option value="frontend">Frontend</option>
       <option value="fullstack">Full Stack</option>
     </select>
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" formControlName="duration" placeholder="Duration (e.g. Jan 2024 - Mar 2025)" />
+    <input class="admin-input" formControlName="duration" placeholder="Duration (e.g. Jan 2024 - Mar 2025)" />
     <label class="flex items-center gap-2 text-sm text-slate-300">
       <input type="checkbox" formControlName="featured" />
       Featured
     </label>
-    <input class="rounded-lg border border-white/10 bg-night-900 px-3 py-2 text-sm" type="number" formControlName="order" placeholder="Order" />
+    <input class="admin-input" type="number" formControlName="order" placeholder="Order" />
     <button
       type="submit"
-      class="sm:col-span-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 py-2 text-sm font-semibold text-night-950 disabled:opacity-50"
+      class="admin-btn-primary sm:col-span-2 disabled:opacity-50"
       [disabled]="busy()"
     >
       Create
@@ -71,44 +89,44 @@
 </div>
 
 @if (editing(); as e) {
-  <div class="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" (click)="closeEdit()">
+  <div class="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-0 sm:p-4 backdrop-blur-sm" (click)="closeEdit()">
     <div
-      class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/10 bg-night-900 p-6"
+      class="flex h-[100dvh] w-full flex-col overflow-y-auto border border-white/10 bg-night-900 p-4 sm:h-auto sm:max-h-[90vh] sm:max-w-lg sm:rounded-2xl sm:p-6"
       (click)="$event.stopPropagation()"
     >
       <h3 class="text-lg font-bold text-white">Edit project</h3>
       <div class="mt-4 grid gap-3">
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.title" placeholder="Project title" (input)="patchEdit('title', $any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.slug" placeholder="project-slug" (input)="patchEdit('slug', $any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.summary" placeholder="1-2 line short summary" (input)="patchEdit('summary', $any($event.target).value)" />
-        <textarea class="min-h-[100px] rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.description" placeholder="Detailed project description..." (input)="patchEdit('description', $any($event.target).value)"></textarea>
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.imageUrl" placeholder="https://..." (input)="patchEdit('imageUrl', $any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.githubUrl" placeholder="https://github.com/username/repo" (input)="patchEdit('githubUrl', $any($event.target).value)" />
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.liveUrl" placeholder="https://your-live-site.com" (input)="patchEdit('liveUrl', $any($event.target).value)" />
+        <input class="admin-input" [value]="e.title" placeholder="Project title" (input)="patchEdit('title', $any($event.target).value)" />
+        <input class="admin-input" [value]="e.slug" placeholder="project-slug" (input)="patchEdit('slug', $any($event.target).value)" />
+        <input class="admin-input" [value]="e.summary" placeholder="1-2 line short summary" (input)="patchEdit('summary', $any($event.target).value)" />
+        <textarea class="admin-textarea" [value]="e.description" placeholder="Detailed project description..." (input)="patchEdit('description', $any($event.target).value)"></textarea>
+        <input class="admin-input" [value]="e.imageUrl" placeholder="https://..." (input)="patchEdit('imageUrl', $any($event.target).value)" />
+        <input class="admin-input" [value]="e.githubUrl" placeholder="https://github.com/username/repo" (input)="patchEdit('githubUrl', $any($event.target).value)" />
+        <input class="admin-input" [value]="e.liveUrl" placeholder="https://your-live-site.com" (input)="patchEdit('liveUrl', $any($event.target).value)" />
         <input
-          class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm"
+          class="admin-input"
           [value]="techStackString()"
           placeholder="Angular, TypeScript, RxJS"
           (input)="setTechStackFromInput($any($event.target).value)"
         />
-        <select class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.status" (change)="patchEdit('status', $any($event.target).value)">
+        <select class="admin-select" [value]="e.status" (change)="patchEdit('status', $any($event.target).value)">
           <option value="completed">Completed</option>
           <option value="live">Live</option>
         </select>
-        <select class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.role" (change)="patchEdit('role', $any($event.target).value)">
+        <select class="admin-select" [value]="e.role" (change)="patchEdit('role', $any($event.target).value)">
           <option value="frontend">Frontend</option>
           <option value="fullstack">Full Stack</option>
         </select>
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" [value]="e.duration" placeholder="Jan 2024 - Mar 2025" (input)="patchEdit('duration', $any($event.target).value)" />
+        <input class="admin-input" [value]="e.duration" placeholder="Jan 2024 - Mar 2025" (input)="patchEdit('duration', $any($event.target).value)" />
         <label class="flex items-center gap-2 text-sm text-slate-300">
           <input type="checkbox" [checked]="e.featured" (change)="patchEdit('featured', $any($event.target).checked)" />
           Featured
         </label>
-        <input class="rounded-lg border border-white/10 bg-night-950 px-3 py-2 text-sm" type="number" [value]="e.order" (input)="patchEdit('order', +$any($event.target).value)" />
+        <input class="admin-input" type="number" [value]="e.order" (input)="patchEdit('order', +$any($event.target).value)" />
       </div>
-      <div class="mt-6 flex justify-end gap-2">
-        <button type="button" class="rounded-lg border border-white/10 px-4 py-2 text-sm" (click)="closeEdit()">Cancel</button>
-        <button type="button" class="rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-night-950" (click)="saveEdit()" [disabled]="busy()">Save</button>
+      <div class="admin-sticky-actions mt-auto flex justify-end gap-2">
+        <button type="button" class="admin-btn-secondary !px-4 !py-2" (click)="closeEdit()">Cancel</button>
+        <button type="button" class="admin-btn-primary !px-4 !py-2" (click)="saveEdit()" [disabled]="busy()">Save</button>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { Router } from '@angular/router';
@@ -22,9 +22,14 @@ export class AdminShellComponent {
     { path: '/admin/experience', label: 'Experience' },
     { path: '/admin/messages', label: 'Messages' },
   ] as const;
+  readonly mobileMenuOpen = signal(false);
 
   logout(): void {
     this.auth.logout();
     void this.router.navigateByUrl('/admin/login');
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen.set(false);
   }
 }

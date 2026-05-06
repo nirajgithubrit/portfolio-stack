@@ -75,8 +75,8 @@ MONGODB_URI=mongodb://localhost:27017/portfolio_stack
 JWT_SECRET=replace-with-strong-secret
 JWT_EXPIRES_IN=7d
 CORS_ORIGIN=http://localhost:4200
-ADMIN_SEED_EMAIL=admin@example.com
-ADMIN_SEED_PASSWORD=ChangeMe123!
+ADMIN_SEED_EMAIL=sataniniraj0000@gmail.com
+ADMIN_SEED_PASSWORD=Niraj.portfolio@0503
 ```
 
 ## Available scripts
@@ -145,6 +145,9 @@ Set these in Render/Railway dashboard:
 - `ADMIN_SEED_EMAIL` = admin email
 - `ADMIN_SEED_PASSWORD` = strong password
 - `PORT` = platform provided (or `4000`)
+- `CLOUDINARY_CLOUD_NAME` = Cloudinary cloud name (optional, enables durable uploads)
+- `CLOUDINARY_API_KEY` = Cloudinary API key
+- `CLOUDINARY_API_SECRET` = Cloudinary API secret
 
 Security notes:
 
@@ -192,3 +195,8 @@ Security notes:
    - admin login works
    - contact form submit works
    - uploads from admin work
+
+### Upload storage behavior
+
+- If Cloudinary env vars are set, uploaded profile image/logo/resume are pushed to Cloudinary and permanent public URLs are saved.
+- If Cloudinary is not configured, uploads fall back to local `uploads/` storage and are served via `/api/uploads-files` (local dev friendly, not durable in many cloud runtimes).

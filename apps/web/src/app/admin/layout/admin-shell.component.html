@@ -25,22 +25,49 @@
   <div class="flex min-w-0 flex-1 flex-col">
     <header class="border-b border-white/10 bg-night-950/90 backdrop-blur md:hidden">
       <div class="flex items-center justify-between gap-4 px-4 py-3">
+        <button
+          type="button"
+          class="rounded-lg border border-white/15 px-3 py-1.5 text-xs text-slate-300"
+          (click)="mobileMenuOpen.set(true)"
+          aria-label="Open admin menu"
+        >
+          Menu
+        </button>
         <span class="text-sm font-semibold">Admin</span>
         <button type="button" class="text-xs text-slate-400" (click)="logout()">Log out</button>
       </div>
-      <nav class="flex gap-2 overflow-x-auto px-4 pb-3 text-xs">
-        @for (l of links; track l.path) {
-          <a
-            [routerLink]="l.path"
-            routerLinkActive="border-cyan-400/50 text-cyan-200"
-            class="shrink-0 rounded-full border border-white/10 px-3 py-1 text-slate-300"
-            >{{ l.label }}</a
-          >
-        }
-      </nav>
     </header>
-    <main class="flex-1 overflow-auto p-4 sm:p-6">
-      <router-outlet />
+    @if (mobileMenuOpen()) {
+      <div class="fixed inset-0 z-[130] md:hidden" (click)="closeMobileMenu()">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <aside
+          class="relative h-full w-72 max-w-[82vw] border-r border-white/10 bg-night-900 p-4"
+          (click)="$event.stopPropagation()"
+        >
+          <div class="mb-6 flex items-center justify-between">
+            <span class="text-sm font-semibold">Admin Menu</span>
+            <button type="button" class="rounded border border-white/15 px-2 py-1 text-xs" (click)="closeMobileMenu()">
+              Close
+            </button>
+          </div>
+          <nav class="space-y-1">
+            @for (l of links; track l.path) {
+              <a
+                [routerLink]="l.path"
+                (click)="closeMobileMenu()"
+                routerLinkActive="bg-white/10 text-cyan-200"
+                class="block rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/5"
+                >{{ l.label }}</a
+              >
+            }
+          </nav>
+        </aside>
+      </div>
+    }
+    <main class="flex-1 overflow-auto p-4 pb-24 sm:p-6">
+      <div class="mx-auto w-full max-w-7xl">
+        <router-outlet />
+      </div>
     </main>
   </div>
 </div>
