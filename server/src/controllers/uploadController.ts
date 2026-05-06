@@ -7,7 +7,25 @@ function publicUrl(filename: string): string {
   return `/api/uploads-files/site/${filename}`;
 }
 
-async function resolveUrl(file: Express.Multer.File, resourceType: 'image' | 'raw'): Promise<string> {
+function extractCloudUploadErrorMessage(err: unknown): string {
+  if (err && typeof err === 'object') {
+    const asObj = err as {
+      message?: unknown;
+      error?: { message?: unknown };
+      http_code?: unknown;
+      name?: unknown;
+    };
+    const nested = asObj.error?.message;
+    if (typeof nested === 'string' && nested.trim()) return nested;
+    if (typeof asObj.message === 'string' && asObj.message.trim()) return asObj.message;
+    const name = typeof asObj.name === 'string' ? asObj.name : 'CloudinaryError';
+    const code = asObj.http_code != null ? ` (${String(asObj.http_code)})` : '';
+    return `${name}${code}`;
+  }
+  return 'Upload failed';
+}
+
+async function resolveUrl(file: Express.Multer.File, resourceType: 'image' | 'raw' | 'auto'): Promise<string> {
   if (!isCloudinaryEnabled()) {
     return publicUrl(file.filename);
   }
@@ -18,10 +36,23 @@ async function resolveUrl(file: Express.Multer.File, resourceType: 'image' | 'ra
     return url;
   } catch (err) {
     await fs.unlink(file.path).catch(() => undefined);
-    const message = err instanceof Error ? err.message : 'Upload failed';
-    const wrapped = new Error(`Cloud upload failed: ${message}`) as Error & { status?: number; code?: string };
+    const providerMessage = extractCloudUploadErrorMessage(err);
+    const wrapped = new Error(`Cloud upload failed: ${providerMessage}`) as Error & {
+      status?: number;
+      code?: string;
+      details?: Record<string, unknown>;
+    };
     wrapped.status = 502;
     wrapped.code = 'CLOUD_UPLOAD_FAILED';
+    wrapped.details = {
+      provider: 'cloudinary',
+      providerMessage,
+      file: {
+        originalName: file.originalname,
+        mimeType: file.mimetype,
+        size: file.size,
+      },
+    };
     throw wrapped;
   }
 }
@@ -52,7 +83,7 @@ export async function uploadResume(req: Request, res: Response): Promise<void> {
     res.status(400).json({ message: 'No file uploaded', code: 'NO_FILE' });
     return;
   }
-  const url = await resolveUrl(file, 'raw');
+  const url = await resolveUrl(file, 'auto');
   res.status(201).json({ url });
 }
 

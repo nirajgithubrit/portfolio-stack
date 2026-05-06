@@ -34,7 +34,7 @@ function ensureCloudinaryConfigured(): void {
 export async function uploadToCloudinary(
   filePath: string,
   folder: string,
-  resourceType: 'image' | 'raw'
+  resourceType: 'image' | 'raw' | 'auto'
 ): Promise<string> {
   ensureCloudinaryConfigured();
 

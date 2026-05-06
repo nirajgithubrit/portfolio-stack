@@ -10,6 +10,7 @@ export class BackendStatusService {
   readonly dismissed = signal(false);
   private polling = false;
   private pollSub?: Subscription;
+  private startupProbeDone = false;
 
   constructor(private readonly http: HttpClient) {}
 
@@ -21,6 +22,14 @@ export class BackendStatusService {
 
   dismissBanner(): void {
     this.dismissed.set(true);
+  }
+
+  probeOnAppStart(): void {
+    if (this.startupProbeDone) return;
+    this.startupProbeDone = true;
+    this.isWarmingUp.set(true);
+    this.dismissed.set(false);
+    this.startPolling();
   }
 
   private startPolling(): void {

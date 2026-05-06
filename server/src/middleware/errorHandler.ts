@@ -13,5 +13,6 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
   const message = err instanceof Error ? err.message : 'Internal Server Error';
   const status = (err as { status?: number })?.status ?? 500;
   const code = (err as { code?: string })?.code ?? 'SERVER_ERROR';
-  res.status(status).json({ message, code });
+  const details = (err as { details?: unknown })?.details;
+  res.status(status).json({ message, code, ...(details ? { details } : {}) });
 }
