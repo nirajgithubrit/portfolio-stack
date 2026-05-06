@@ -159,7 +159,7 @@ await SiteSettings.create({
     'I am a full-stack developer focused on scalable APIs, clean architecture, and modern UI experiences.',
   locationLabel: 'Ahmedabad, Gujarat, India',
   profilePhotoUrl: '/profile.png',
-  logoUrl: '/logo.svg',
+  logoUrl: '/logo.png',
   resumeUrl: '/resume.pdf',
   contactEmail: 'niraj@example.com',
   phone: '',

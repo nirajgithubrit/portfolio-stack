@@ -11,7 +11,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
     'I build responsive web apps with Angular and Node, backed by MongoDB - from idea to production.',
   locationLabel: 'India',
   profilePhotoUrl: '/profile.png',
-  logoUrl: '/logo.svg',
+  logoUrl: '/logo.png',
   resumeUrl: '/resume.pdf',
   contactEmail: '',
   phone: '',

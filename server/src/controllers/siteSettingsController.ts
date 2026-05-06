@@ -9,7 +9,7 @@ const FALLBACK_SETTINGS = {
     'I build modern, reliable web products with Angular, Node.js, and MongoDB from idea to production.',
   locationLabel: 'India',
   profilePhotoUrl: '/profile.png',
-  logoUrl: '/logo.svg',
+  logoUrl: '/logo.png',
   resumeUrl: '/resume.pdf',
   contactEmail: '',
   phone: '',
