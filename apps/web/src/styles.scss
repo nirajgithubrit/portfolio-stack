@@ -292,6 +292,22 @@ a.nav-link-active {
   padding: 0.875rem;
 }
 
+.admin-upload-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-height: 170px;
+}
+
+.admin-upload-url {
+  max-width: 100%;
+  word-break: break-all;
+  white-space: normal;
+  line-height: 1.25;
+}
+
 .admin-sticky-actions {
   position: sticky;
   bottom: 0;
