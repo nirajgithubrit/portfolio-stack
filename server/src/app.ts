@@ -18,7 +18,10 @@ export function createApp(): express.Application {
 
   const rawOrigins = process.env.CORS_ORIGIN;
   const allowedOrigins = rawOrigins
-    ? rawOrigins.split(',').map((o) => o.trim()).filter(Boolean)
+    ? rawOrigins
+        .split(',')
+        .map((o) => o.trim().replace(/\/+$/, ''))
+        .filter(Boolean)
     : [];
 
   app.use(
@@ -29,7 +32,8 @@ export function createApp(): express.Application {
               // non-browser clients
               return callback(null, true);
             }
-            if (allowedOrigins.includes(origin)) {
+            const normalizedOrigin = origin.replace(/\/+$/, '');
+            if (allowedOrigins.includes(normalizedOrigin)) {
               return callback(null, true);
             }
             return callback(new Error('Not allowed by CORS'));

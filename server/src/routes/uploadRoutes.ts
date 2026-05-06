@@ -1,6 +1,7 @@
 import { Router, type NextFunction, type Request, type RequestHandler, type Response } from 'express';
 import { authenticateJWT, requireAdmin } from '../middleware/auth.js';
 import * as ctrl from '../controllers/uploadController.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
 import {
   uploadSiteLogoImage,
   uploadSiteProfileImage,
@@ -26,21 +27,21 @@ router.post(
   authenticateJWT,
   requireAdmin,
   wrapUpload(uploadSiteProfileImage),
-  ctrl.uploadProfile
+  asyncHandler(ctrl.uploadProfile)
 );
 router.post(
   '/site/logo',
   authenticateJWT,
   requireAdmin,
   wrapUpload(uploadSiteLogoImage),
-  ctrl.uploadLogo
+  asyncHandler(ctrl.uploadLogo)
 );
 router.post(
   '/site/resume',
   authenticateJWT,
   requireAdmin,
   wrapUpload(uploadSiteResumePdf),
-  ctrl.uploadResume
+  asyncHandler(ctrl.uploadResume)
 );
 
 export default router;
